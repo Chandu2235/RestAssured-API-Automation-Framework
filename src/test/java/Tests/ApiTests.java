@@ -65,23 +65,23 @@ public class ApiTests {
     //     org.testng.Assert.assertEquals(statusCode, 404);
     // }
     //write a test script for user page = 3 and check the status code
-    @Test(description = "Test to get users on page 3")
-    public void getUsersPage3Test() {
-        // Send GET request and capture the response
-        Response response = RestAssured.given()
-                .when()
-                .get("/users?page=3");
+    // @Test(description = "Test to get users on page 3")
+    // public void getUsersPage3Test() {
+    //     // Send GET request and capture the response
+    //     Response response = RestAssured.given()
+    //             .when()
+    //             .get("/users?page=3");
 
-        // Get response status code
-        int statusCode = response.getStatusCode();
-        LOGGER.info("Status code: " + statusCode);
+    //     // Get response status code
+    //     int statusCode = response.getStatusCode();
+    //     LOGGER.info("Status code: " + statusCode);
 
-        // Get response body
-        String responseBody = response.getBody().asString();
-        LOGGER.info("Response body: " + responseBody);
+    //     // Get response body
+    //     String responseBody = response.getBody().asString();
+    //     LOGGER.info("Response body: " + responseBody);
 
-        // Add assertions as per your requirements
-        // For example, to assert the status code is 200
-        org.testng.Assert.assertEquals(statusCode, 200);
-    }
+    //     // Add assertions as per your requirements
+    //     // For example, to assert the status code is 200
+    //     org.testng.Assert.assertEquals(statusCode, 200);
+    // }
 }

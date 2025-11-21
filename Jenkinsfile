@@ -49,13 +49,16 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    def testCommand = "mvn test"
+                    // Default TestNG suite
+                    def testCommand = "mvn test -DsuiteXmlFile=testng.xml " +
+                                      "-DBROWSER=${params.BROWSER} " +
+                                      "-DHEADLESS=${params.HEADLESS}"
 
-                    // Branch-based execution
+                    // Branch-based test suite selection
                     if (env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'master') {
-                        testCommand = "mvn test -Dsuite=regression"
+                        testCommand += " -DTEST_SUITE=regression"
                     } else if (env.BRANCH_NAME?.startsWith('feature/')) {
-                        testCommand = "mvn test -Dsuite=smoke"
+                        testCommand += " -DTEST_SUITE=smoke"
                     }
 
                     echo "Running tests with command: ${testCommand}"
@@ -65,17 +68,17 @@ pipeline {
 
             post {
                 always {
-                    // Publish TestNG/JUnit
-                    junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                    // Publish TestNG/JUnit XML reports
+                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
 
-                    // Archive surefire folder
+                    // Archive the reports folder
                     archiveArtifacts artifacts: 'target/surefire-reports/**/*', allowEmptyArchive: true
 
-                    // Publish HTML report (TestNG index.html)
+                    // Publish HTML report
                     publishHTML([
                         reportDir: 'target/surefire-reports',
                         reportFiles: 'index.html',
-                        reportName: 'Test Report',
+                        reportName: 'Extent Test Report',
                         alwaysLinkToLastBuild: true,
                         keepAll: true,
                         allowMissing: true
