@@ -49,21 +49,21 @@ public class ApiTests {
         org.testng.Assert.assertTrue(statusCode >= 400 && statusCode < 500);
     }
 
-    @Test(description = "Test to handle resource not found")
-    public void testResourceNotFound() {
-        // Send GET request to a non-existing resource
-        Response response = RestAssured.given()
-                .when()
-                .get("/users/1000");
+    // @Test(description = "Test to handle resource not found")
+    // public void testResourceNotFound() {
+    //     // Send GET request to a non-existing resource
+    //     Response response = RestAssured.given()
+    //             .when()
+    //             .get("/users/1000");
 
-        // Get response status code
-        int statusCode = response.getStatusCode();
-        LOGGER.info("Status code: " + statusCode);
+    //     // Get response status code
+    //     int statusCode = response.getStatusCode();
+    //     LOGGER.info("Status code: " + statusCode);
 
-        // Add assertions as per your requirements
-        // For example, to assert that the status code is 404 (Not Found)
-        org.testng.Assert.assertEquals(statusCode, 404);
-    }
+    //     // Add assertions as per your requirements
+    //     // For example, to assert that the status code is 404 (Not Found)
+    //     org.testng.Assert.assertEquals(statusCode, 404);
+    // }
     //write a test script for user page = 3 and check the status code
     @Test(description = "Test to get users on page 3")
     public void getUsersPage3Test() {

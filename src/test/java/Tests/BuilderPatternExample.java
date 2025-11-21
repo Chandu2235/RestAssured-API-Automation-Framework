@@ -10,7 +10,6 @@ import static org.testng.Assert.assertEquals;
 
 public class BuilderPatternExample {
 
-
     @Test
     public void getPostsByUserIdNormalApproach() {
         // Set base URI

@@ -2,14 +2,12 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven-3.9.0'       // Make sure this matches your Jenkins Global Tool Config
-        jdk 'JDK-17'              // Match your installed JDK version in Jenkins
+        maven 'Maven-3.9.0'
+        jdk 'JDK-17'
     }
 
     environment {
-        // Optional: Headless browser display (useful for Linux agents with Xvfb)
         DISPLAY = ':99'
-        // Browser configuration from parameters
         BROWSER = "${params.BROWSER ?: 'chrome'}"
         HEADLESS = "${params.HEADLESS ?: 'true'}"
     }
@@ -33,6 +31,7 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -50,36 +49,36 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    // Default test command
-                    def testCommand = 'mvn test'
+                    def testCommand = "mvn test"
 
-                    // Branch-based test execution with safe navigation
+                    // Branch-based execution
                     if (env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'master') {
-                        testCommand = 'mvn test -Dsuite=regression'
+                        testCommand = "mvn test -Dsuite=regression"
                     } else if (env.BRANCH_NAME?.startsWith('feature/')) {
-                        testCommand = 'mvn test -Dsuite=smoke'
+                        testCommand = "mvn test -Dsuite=smoke"
                     }
 
                     echo "Running tests with command: ${testCommand}"
-                    bat testCommand
+                    bat "${testCommand}"
                 }
             }
+
             post {
                 always {
-                    // ✅ Publish JUnit/TestNG results
-                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
+                    // Publish TestNG/JUnit
+                    junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
 
-                    // ✅ Archive test reports
+                    // Archive surefire folder
                     archiveArtifacts artifacts: 'target/surefire-reports/**/*', allowEmptyArchive: true
 
-                    // ✅ Publish HTML report if index.html exists
+                    // Publish HTML report (TestNG index.html)
                     publishHTML([
-                        allowMissing: true,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
                         reportDir: 'target/surefire-reports',
                         reportFiles: 'index.html',
-                        reportName: 'Test Report'
+                        reportName: 'Test Report',
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        allowMissing: true
                     ])
                 }
             }
@@ -87,7 +86,7 @@ pipeline {
 
         stage('Package') {
             steps {
-                echo 'Packaging the application...'
+                echo 'Packaging application...'
                 bat 'mvn package -DskipTests'
             }
         }
